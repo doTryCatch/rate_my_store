@@ -1,35 +1,18 @@
 import React from "react";
-import {
-  BrowserRouter,
-  useNavigate,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+
 import { SignIn } from "./pages/loginAndSignUp/signIn";
 import { PageNotFound } from "./pages/pageNotFound_404/pageNotFound";
 import { SignUp } from "./pages/loginAndSignUp/signUp";
-import { useAuth } from "./AuthContext/getUser";
+
 import { Dashboard } from "./pages/dashboard/dashboard";
+import { ProtectedRoutes } from "./protectRoute";
+// import { useAuth } from "./AuthContext/getUser";
 
 export const App = () => {
-  return (
-    <BrowserRouter>
-      <div className="App">{/* <SignIn /> */}</div>
-      {/* routes setup  */}
-      <RoutesSetup />
-    </BrowserRouter>
-  );
-};
-function ProtectedRoutes({ children }: { children: React.JSX.Element }) {
-  const { user } = useAuth();
-
-  if (!user) return <Navigate to="/signIn" replace />;
-
-  return children;
-}
-function RoutesSetup() {
+  // const { user } = useAuth();
+  // if (user) <Navigate to="/dashboard" replace />;
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -47,4 +30,4 @@ function RoutesSetup() {
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
-}
+};

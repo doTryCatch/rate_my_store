@@ -2,9 +2,9 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useAuth } from "../../AuthContext/getUser";
-import { api } from "../../utils/api";
-export const SignUp = () => {
+import { useAuth } from "../AuthContext/getUser";
+import { api } from "../utils/api";
+export const AddStore = () => {
   const { user } = useAuth();
   console.log(user);
   const [name, setName] = useState<string | null>(null);
@@ -12,7 +12,7 @@ export const SignUp = () => {
   const [password, setPassword] = useState<string | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const navigate = useNavigate();
-  const handleSignUp = async () => {
+  const handleAddStore = async () => {
     try {
       await api.post("/auth/register", {
         name,
@@ -42,7 +42,7 @@ export const SignUp = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div className="email  center  bg-slate-100">
+          <div className="email center  bg-slate-100">
             <input
               type="text"
               placeholder="Email"
@@ -69,9 +69,9 @@ export const SignUp = () => {
           <div className="btn center ">
             <button
               className=" center w-[50%] rounded-md h-10 bg-orange-500 "
-              onClick={handleSignUp}
+              onClick={handleAddStore}
             >
-              Register
+              Add Store
             </button>
           </div>
 
@@ -81,11 +81,6 @@ export const SignUp = () => {
               Sign In
             </span>
           </Link>
-        </div>
-      </div>
-      <div className="right w-[50%]">
-        <div className="right-container">
-          <pre>This is Assignment for an Internship</pre>
         </div>
       </div>
     </div>
