@@ -17,12 +17,14 @@ export const Profile = () => {
         password: pass,
         email: user?.email,
       });
+
       toast.success("password changed successfully!");
-    } catch (error) {
-      const err = error as AxiosError<any>;
-      toast.error(err?.response?.data || "failed updating password");
-    } finally {
       setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      const err = error as AxiosError<any>;
+      console.log(err.response);
+      toast.error(err?.response?.data?.msg || "failed updating password");
     }
   };
 
