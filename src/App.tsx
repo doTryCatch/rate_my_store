@@ -11,8 +11,7 @@ import { ProtectedRoutes } from "./protectRoute";
 // import { useAuth } from "./AuthContext/getUser";
 
 export const App = () => {
-  // const { user } = useAuth();
-  // if (user) <Navigate to="/dashboard" replace />;
+
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
