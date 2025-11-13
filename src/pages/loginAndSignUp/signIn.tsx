@@ -1,8 +1,9 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../AuthContext/getUser";
+import { api } from "../../utils/api";
 export const SignIn = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export const SignIn = () => {
   const handleLogin = async () => {
     console.log(email, " ", password);
     try {
-      const res = await axios.post(
+      const res = await api.post(
         "/auth/login",
         {
           email,
