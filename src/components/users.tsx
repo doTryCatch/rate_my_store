@@ -29,7 +29,7 @@ interface Filters {
 }
 
 export const Users = () => {
-  const { allUsers, stores, user } = useAuth();
+  const { allUsers, stores } = useAuth();
   const [filterData, setFilterData] = useState<UserType[] | null>(null);
 
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);

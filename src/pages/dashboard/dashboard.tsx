@@ -23,7 +23,7 @@ export const Dashboard = () => {
     if (user?.role === "STORE_OWNER")
       setNavComponents(["Profile", "Dashboard"]);
     if (user?.role === "USER") setNavComponents(["Profile", "Stores"]);
-  }, []);
+  }, [user]);
 
   const [activeComponent, setactiveComponent] = useState("Dashboard");
   const [isaddCard, setAddCard] = useState(false);
