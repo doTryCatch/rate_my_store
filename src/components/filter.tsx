@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Spinner from "react-spinners/ClipLoader";
 
 interface FilterProps {
   onFilter: (filters: {
@@ -11,21 +12,26 @@ interface FilterProps {
 }
 
 export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [role, setRole] = useState("");
 
   const handleSearch = () => {
+    setLoading(true);
     onFilter({ name, email, address, role });
+    setTimeout(() => setLoading(false), 500);
   };
 
   const handleClear = () => {
+    setLoading(true);
     setName("");
     setEmail("");
     setAddress("");
     setRole("");
     onFilter({});
+    setTimeout(() => setLoading(false), 500);
   };
 
   return (
@@ -63,15 +69,21 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
           <option value="ADMIN">ADMIN</option>
           <option value="STORE_OWNER">STORE OWNER</option>
         </select>
-        <div className="flex gap-4 ml-10">
+
+        <div className="flex gap-4 ml-10 items-center">
           <button
             onClick={handleSearch}
+            disabled={isLoading}
             className="bg-blue-600 text-white px-4 py-2 rounded"
           >
             Search
           </button>
+
+          {isLoading && <Spinner size={20} className="bg-green-400" />}
+
           <button
             onClick={handleClear}
+            disabled={isLoading}
             className="bg-gray-400 text-white px-4 py-2 rounded"
           >
             Clear

@@ -3,6 +3,7 @@ import { useAuth } from "../AuthContext/getUser";
 import { Filter } from "../components/filter";
 import { FaEye } from "react-icons/fa";
 import { Rating } from "@mui/material";
+import Spinner from "react-spinners/ClipLoader";
 
 interface RatingType {
   id?: string;
@@ -30,16 +31,19 @@ interface Filters {
 
 export const Users = () => {
   const { allUsers, stores } = useAuth();
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [filterData, setFilterData] = useState<UserType[] | null>(null);
 
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isCardOpen, setisCardOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setFilterData(allUsers || []);
   }, [allUsers]);
 
   const handleFilter = ({ name, email, address, role }: Filters) => {
+    setLoading(true);
+
     if (!allUsers) return;
 
     const filtered = allUsers.filter((data: UserType) => {
@@ -59,13 +63,15 @@ export const Users = () => {
     });
 
     setFilterData(filtered);
+
+    setTimeout(() => setLoading(false), 500);
   };
 
   return (
-    <div className="store">
+    <div className="store ">
       <Filter onFilter={handleFilter} />
 
-      <table className="w-full table-auto">
+      <table className="w-full table-auto ">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
             <th className="py-3 px-6 text-left">ID</th>
@@ -73,16 +79,19 @@ export const Users = () => {
             <th className="py-3 px-6 text-left">Email</th>
             <th className="py-3 px-6 text-left">Address</th>
             <th className="py-3 px-6 text-left">Role</th>
-            <th className="py-3 px-6 text-left">Details</th>
+            <th className="py-3 px-6 text-left flex items-center gap-2">
+              Details
+              {isLoading && <Spinner size={18} color="#000" />}
+            </th>
           </tr>
         </thead>
 
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody className="text-gray-600 text-sm font-light ">
           {filterData &&
             filterData.map((user: UserType) => (
               <tr
                 key={user.id}
-                className="border-b border-gray-200 hover:bg-gray-100 transition duration-300 ease-in-out"
+                className="border-b border-gray-200 font-bold text-slate-500 hover:bg-gray-100 transition duration-300 ease-in-out"
               >
                 <td className="py-2 px-2">{user.id}</td>
                 <td className="py-2 px-2">{user.name}</td>
@@ -96,7 +105,7 @@ export const Users = () => {
                     aria-label="View Details"
                     onClick={() => {
                       setSelectedUser(user);
-                      setIsModalOpen(true);
+                      setisCardOpen(true);
                     }}
                   >
                     <FaEye />
@@ -107,13 +116,12 @@ export const Users = () => {
         </tbody>
       </table>
 
-      {/* detail popup */}
-      {isModalOpen && selectedUser && (
+      {isCardOpen && selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white w-96 p-5 rounded-lg shadow-lg relative">
             <button
               className="absolute top-2 right-2 text-gray-600 hover:text-black"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => setisCardOpen(false)}
             >
               ✕
             </button>

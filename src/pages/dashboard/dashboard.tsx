@@ -29,7 +29,7 @@ export const Dashboard = () => {
   const [isaddCard, setAddCard] = useState(false);
   return (
     <div className="dashboard flex relative">
-      <div className="left-nav w-[20%] h-[100vh] text-[#fff] bg-[#1a1919] ">
+      <div className="left-nav sticky top-0 w-[20%] h-[100vh] text-[#fff] bg-[#1a1919] ">
         <div className="nav-container ">
           <div className="h-16 center bg-[#141414] flex items-center justify-center">
             {user?.name}
@@ -60,12 +60,14 @@ export const Dashboard = () => {
             Welcome to the {activeComponent}
           </h1>
           <div className="add mr-10 cursor-pointer hover:scale-110">
-            {user?.role === "ADMIN" && activeComponent !== "Dashboard" && (
-              <IoAddCircle
-                className="h-8 w-8"
-                onClick={() => setAddCard(true)}
-              />
-            )}
+            {user?.role === "ADMIN" &&
+              activeComponent !== "Dashboard" &&
+              activeComponent !== "Profile" && (
+                <IoAddCircle
+                  className="h-8 w-8"
+                  onClick={() => setAddCard(true)}
+                />
+              )}
           </div>
         </div>
         {isaddCard && (

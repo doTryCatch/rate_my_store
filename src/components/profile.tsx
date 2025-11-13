@@ -3,11 +3,15 @@ import { useAuth } from "../AuthContext/getUser";
 import { api } from "../utils/api";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import Spinner from "react-spinners/ClipLoader";
 
 export const Profile = () => {
-  const [pass, setPass] = useState<string>("null");
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [pass, setPass] = useState<string>("");
   const { user } = useAuth();
+
   const handlePassUpdate = async () => {
+    setLoading(true);
     try {
       await api.post("/auth/updateUser", {
         password: pass,
@@ -17,8 +21,11 @@ export const Profile = () => {
     } catch (error) {
       const err = error as AxiosError<any>;
       toast.error(err?.response?.data || "failed updating password");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="w-full flex justify-center mt-10">
       <div className="w-full max-w-md bg-white shadow-md rounded-xl p-6 space-y-6">
@@ -43,11 +50,10 @@ export const Profile = () => {
           <span>{user?.email}</span>
         </div>
 
-        {/* update password */}
         <div className="pt-4 border-t">
           <h2 className="font-medium text-lg mb-3">Update Password</h2>
 
-          <div className="flex flex-col space-y-3">
+          <div className="flex flex-col space-y-3 items-center">
             <input
               type="password"
               placeholder="Enter new password"
@@ -56,12 +62,17 @@ export const Profile = () => {
               onChange={(e) => setPass(e.target.value)}
             />
 
-            <button
-              className="bg-orange-500 text-white py-2 rounded-lg hover:bg-green-700 transition"
-              onClick={handlePassUpdate}
-            >
-              Update Password
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition"
+                onClick={handlePassUpdate}
+                disabled={isLoading}
+              >
+                {isLoading ? "Processing..." : "Update Password"}
+              </button>
+
+              {isLoading && <Spinner size={25} color="#ff6347" />}
+            </div>
           </div>
         </div>
       </div>

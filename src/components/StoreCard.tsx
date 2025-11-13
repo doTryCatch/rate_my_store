@@ -5,13 +5,17 @@ import { useState } from "react";
 import { api } from "../utils/api";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import Spinner from "react-spinners/ClipLoader";
+
 export const StoreCards = () => {
   const { stores, user } = useAuth();
   const [value, setValue] = useState<number>(0);
   const [isRatingBoxOpen, setRatingBox] = useState<boolean>(false);
   const [storeId, setStoreId] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const handleRating = async () => {
+    setLoading(true);
     try {
       await api.post("/rating/add", {
         value,
@@ -23,6 +27,8 @@ export const StoreCards = () => {
     } catch (error) {
       const err = error as AxiosError<any>;
       toast.error(err.response?.data || "Rating process failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,8 +75,9 @@ export const StoreCards = () => {
                     </span>
                   </button>
                 )}
+
                 {isRatingBoxOpen && store.id === storeId && (
-                  <div className="input flex flex-col gap-y-2">
+                  <div className="input flex flex-col gap-y-2 items-center">
                     <input
                       type="number"
                       id="quantity"
@@ -82,21 +89,25 @@ export const StoreCards = () => {
                       onChange={(e) => setValue(Number(e.target.value))}
                     />
 
-                    <button
-                      className="bg-orange-500 hover:bg-green-500 w-24 h-10 rounded-lg"
-                      onClick={handleRating}
-                    >
-                      Submit
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="bg-orange-500 hover:bg-green-500 w-24 h-10 rounded-lg"
+                        onClick={handleRating}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Processing..." : "Submit"}
+                      </button>
+
+                      {isLoading && <Spinner size={22} color="#ff6347" />}
+                    </div>
                   </div>
                 )}
-                {/* your rating*/}
+
                 {user?.role !== "STORE_OWNER" &&
                   (() => {
                     const yourRating = store.ratings.find(
                       (data) => data.userId === user?.id
                     );
-                    console.log(yourRating);
 
                     return (
                       <div className="text-black">

@@ -4,15 +4,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../AuthContext/getUser";
 import { api } from "../../utils/api";
+import Spinner from "react-spinners/ClipLoader";
 export const SignUp = () => {
   const { user } = useAuth();
   console.log(user);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const navigate = useNavigate();
+  const text = `
+Roxiler Systems,
+    This is Assignment for an Internship.
+`;
   const handleSignUp = async () => {
+    setLoading(true);
     try {
       await api.post("/auth/register", {
         name,
@@ -21,8 +28,10 @@ export const SignUp = () => {
         address,
       });
       toast.success("Register successfully!");
+      setLoading(false);
       navigate("/signIn");
     } catch (error) {
+      setLoading(false);
       const err = error as AxiosError<any>;
       toast.error(
         err?.response?.data?.msg || "Something went wrong. Please try again."
@@ -66,16 +75,19 @@ export const SignUp = () => {
               onChange={(e) => setAddress(e.target.value)}
             />
           </div>
-          <div className="btn center ">
+          <div className="btn center flex items-center gap-3">
             <button
-              className=" center w-[50%] rounded-md h-10 bg-orange-500 "
+              className="center w-[50%] rounded-md h-10 bg-orange-500"
               onClick={handleSignUp}
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? "Processing..." : "Register"}
             </button>
+
+            {isLoading && <Spinner size={25} className="bg-green-500" />}
           </div>
 
-          <Link to={"/signUp"} className="center">
+          <Link to={"/signIn"} className="center">
             <p>Already have an account! </p>
             <span className="text-blue-600 underline mx-2 hover:text-blue-800">
               Sign In
@@ -84,8 +96,17 @@ export const SignUp = () => {
         </div>
       </div>
       <div className="right w-[50%]">
-        <div className="right-container">
-          <pre>This is Assignment for an Internship</pre>
+        <div
+          className="right-container center "
+          style={{
+            backgroundImage: "url('/store.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            height: "500px",
+            width: "100%",
+          }}
+        >
+          <pre className="font-bold text-lg text-orange-500 mb-36">{text}</pre>
         </div>
       </div>
     </div>

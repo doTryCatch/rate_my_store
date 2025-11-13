@@ -5,7 +5,7 @@ export const Store = () => {
   const { stores } = useAuth();
 
   return (
-    <div className="store">
+    <div className="store my-10 h-[58vh] overflow-y-scroll">
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -23,7 +23,7 @@ export const Store = () => {
               return (
                 <tr
                   key={index}
-                  className="border-b border-gray-200 hover:bg-gray-100 transition duration-300 ease-in-out"
+                  className="border-b font-bold text-slate-500 border-gray-200 hover:bg-gray-100 transition duration-300 ease-in-out"
                 >
                   <td className="py-2 px-2 text-left">{store.id}</td>
                   <td className="py-2 px-2 text-left ">{store.name}</td>
