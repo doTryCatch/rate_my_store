@@ -43,10 +43,18 @@ export const Users = () => {
     if (!allUsers) return;
 
     const filtered = allUsers.filter((data: UserType) => {
-      if (email && !data.email.includes(email)) return false;
-      if (name && !data.name.includes(name)) return false;
-      if (address && !data.address.includes(address)) return false;
-      if (role && !data.role.includes(role)) return false;
+      const nameFilter = name?.toLowerCase().trim();
+      const emailFilter = email?.toLowerCase().trim();
+      const addressFilter = address?.toLowerCase().trim();
+      const roleFilter = role?.toLowerCase().trim();
+      const dataName = data.name.toLowerCase();
+      const dataEmail = data.email.toLowerCase();
+      const dataAddress = data.address.toLowerCase();
+      const dataRole = data.role.toLowerCase();
+      if (nameFilter && !dataName.includes(nameFilter)) return false;
+      if (emailFilter && !dataEmail.includes(emailFilter)) return false;
+      if (addressFilter && !dataAddress.includes(addressFilter)) return false;
+      if (roleFilter && !dataRole.includes(roleFilter)) return false;
       return true;
     });
 

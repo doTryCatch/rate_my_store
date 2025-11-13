@@ -91,19 +91,20 @@ export const StoreCards = () => {
                   </div>
                 )}
                 {/* your rating*/}
-                {(() => {
-                  const yourRating = store.ratings.find(
-                    (data) => data.userId === user?.id
-                  );
-                  console.log(yourRating);
+                {user?.role !== "STORE_OWNER" &&
+                  (() => {
+                    const yourRating = store.ratings.find(
+                      (data) => data.userId === user?.id
+                    );
+                    console.log(yourRating);
 
-                  return (
-                    <div className="text-black">
-                      Your Rating:{" "}
-                      {yourRating ? yourRating.value : "Not rated yet"}
-                    </div>
-                  );
-                })()}
+                    return (
+                      <div className="text-black">
+                        Your Rating:{" "}
+                        {yourRating ? yourRating.value : "Not rated yet"}
+                      </div>
+                    );
+                  })()}
               </div>
             );
           })}

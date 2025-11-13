@@ -60,7 +60,7 @@ export const Dashboard = () => {
             Welcome to the {activeComponent}
           </h1>
           <div className="add mr-10 cursor-pointer hover:scale-110">
-            {user?.role === "ADMIN" && (
+            {user?.role === "ADMIN" && activeComponent !== "Dashboard" && (
               <IoAddCircle
                 className="h-8 w-8"
                 onClick={() => setAddCard(true)}
