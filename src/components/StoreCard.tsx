@@ -27,19 +27,17 @@ export const StoreCards = () => {
   };
 
   return (
-    <div className="p-6 flex w-full h-full ">
-      <div className="grid  gap-6">
+    <div className="p-6 flex w-full  ">
+      <div
+        className={
+          "grid gap-6 " +
+          (user?.role === "USER"
+            ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+            : "")
+        }
+      >
         {stores &&
           stores.map((store) => {
-            const rating =
-              store.rating?.length > 0
-                ? store.rating.reduce((sum, rate) => sum + rate.value, 0) /
-                  store.rating.length
-                : 0;
-            console.log(store.rating, rating);
-            const yourRating: any = store.rating?.filter(
-              (rate: any) => rate.userId === user?.id
-            )[0];
             return (
               <div
                 key={store.id}
@@ -57,7 +55,7 @@ export const StoreCards = () => {
                   {store.address}
                 </p>
 
-                <Rating value={rating} precision={0.5} readOnly />
+                <Rating value={store.averageRating} precision={0.5} readOnly />
 
                 {user?.role === "USER" && (
                   <button className="text-blue-600">
@@ -93,11 +91,19 @@ export const StoreCards = () => {
                   </div>
                 )}
                 {/* your rating*/}
-                {yourRating && (
-                  <p className="text-sm text-green-600">
-                    Your rating: {yourRating.value}
-                  </p>
-                )}
+                {(() => {
+                  const yourRating = store.ratings.find(
+                    (data) => data.userId === user?.id
+                  );
+                  console.log(yourRating);
+
+                  return (
+                    <div className="text-black">
+                      Your Rating:{" "}
+                      {yourRating ? yourRating.value : "Not rated yet"}
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}

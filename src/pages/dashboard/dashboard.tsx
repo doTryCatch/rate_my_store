@@ -9,6 +9,7 @@ import { AddUser } from "../../components/addUser";
 import { Profile } from "../../components/profile";
 import { StoreCards } from "../../components/StoreCard";
 import { StoreDashboard } from "../../components/storeDashboard";
+import { AdminDashboard } from "../../components/adminDashboard";
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -24,22 +25,22 @@ export const Dashboard = () => {
     if (user?.role === "USER") setNavComponents(["Profile", "Stores"]);
   }, []);
 
-  const [activeNav, setActiveNav] = useState("Dashboard");
+  const [activeComponent, setactiveComponent] = useState("Dashboard");
   const [isaddCard, setAddCard] = useState(false);
   return (
     <div className="dashboard flex relative">
       <div className="left-nav w-[20%] h-[100vh] text-[#fff] bg-[#1a1919] ">
         <div className="nav-container ">
           <div className="h-16 center bg-[#141414] flex items-center justify-center">
-            {user?.role} : {user?.name}
+            {user?.name}
           </div>
           <ul className="m-2 space-y-2">
             {navComponents.map((item) => (
               <li
                 key={item}
-                onClick={() => setActiveNav(item)}
+                onClick={() => setactiveComponent(item)}
                 className={`h-10 px-4 py-2 w-full cursor-pointer rounded-sm transition-colors ${
-                  activeNav === item
+                  activeComponent === item
                     ? "bg-[#ea2868] text-white font-medium"
                     : " hover:text-white"
                 } `}
@@ -56,10 +57,15 @@ export const Dashboard = () => {
         <div className="heading flex justify-between">
           {" "}
           <h1 className="text-2xl font-bold mt-4">
-            Welcome to the {activeNav}
+            Welcome to the {activeComponent}
           </h1>
           <div className="add mr-10 cursor-pointer hover:scale-110">
-            <IoAddCircle className="h-8 w-8" onClick={() => setAddCard(true)} />
+            {user?.role === "ADMIN" && (
+              <IoAddCircle
+                className="h-8 w-8"
+                onClick={() => setAddCard(true)}
+              />
+            )}
           </div>
         </div>
         {isaddCard && (
@@ -68,18 +74,23 @@ export const Dashboard = () => {
             onClick={() => setAddCard(false)}
           >
             <div onClick={(e) => e.stopPropagation()}>
-              {activeNav === "Stores" && <AddStore />}
-              {activeNav === "Users" && <AddUser />}
+              {activeComponent === "Stores" && <AddStore />}
+              {activeComponent === "Users" && <AddUser />}
             </div>
           </div>
         )}
-        {activeNav === "Profile" && <Profile />}
-        {activeNav === "Dashboard" && user?.role === "STORE_OWNER" && (
+        {activeComponent === "Profile" && <Profile />}
+        {activeComponent === "Dashboard" && user?.role === "STORE_OWNER" && (
           <StoreDashboard />
         )}
-        {activeNav === "Stores" && user?.role === "ADMIN" && <Store />}
-        {activeNav === "Stores" && user?.role === "USER" && <StoreCards />}
-        {activeNav === "Users" && <Users />}
+        {activeComponent === "Dashboard" && user?.role === "ADMIN" && (
+          <AdminDashboard />
+        )}
+        {activeComponent === "Stores" && user?.role === "ADMIN" && <Store />}
+        {activeComponent === "Stores" && user?.role === "USER" && (
+          <StoreCards />
+        )}
+        {activeComponent === "Users" && <Users />}
       </div>
     </div>
   );

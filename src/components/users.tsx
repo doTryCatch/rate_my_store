@@ -1,31 +1,55 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext/getUser";
 import { Filter } from "../components/filter";
+import { FaEye } from "react-icons/fa";
 import { Rating } from "@mui/material";
-import { FaEye } from "react-icons/fa/index";
-interface filters {
+
+interface RatingType {
+  id?: string;
+  value: number;
+  userId: string | null;
+  storeId: string;
+}
+
+interface UserType {
+  id: string;
+  name: string;
+  email: string;
+  address: string;
+  role: "ADMIN" | "USER" | "STORE_OWNER";
+  ratings?: RatingType[];
+}
+
+interface Filters {
   id?: string;
   name?: string;
   email?: string;
   address?: string;
   role?: string;
 }
-export const Users = () => {
-  const { allUsers } = useAuth();
-  const [filterData, setFilterData] = useState<filters[] | null>(null);
-  useEffect(() => {
-    setFilterData(allUsers);
-  }, []);
 
-  const handleFilter = ({ name, email, address, role }: filters) => {
+export const Users = () => {
+  const { allUsers, stores, user } = useAuth();
+  const [filterData, setFilterData] = useState<UserType[] | null>(null);
+
+  const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setFilterData(allUsers || []);
+  }, [allUsers]);
+
+  const handleFilter = ({ name, email, address, role }: Filters) => {
     if (!allUsers) return;
-    const filtered = allUsers.filter((data) => {
+
+    const filtered = allUsers.filter((data: UserType) => {
       if (email && !data.email.includes(email)) return false;
       if (name && !data.name.includes(name)) return false;
       if (address && !data.address.includes(address)) return false;
       if (role && !data.role.includes(role)) return false;
       return true;
     });
+
     setFilterData(filtered);
   };
 
@@ -47,33 +71,83 @@ export const Users = () => {
 
         <tbody className="text-gray-600 text-sm font-light">
           {filterData &&
-            filterData.map((user, index) => {
-              return (
-                <tr
-                  key={index}
-                  className="border-b border-gray-200 hover:bg-gray-100 transition duration-300 ease-in-out"
-                >
-                  <td className="py-2 px-2 text-left">{user.id}</td>
-                  <td className="py-2 px-2 text-left flex flex-col">
-                    {user.name}
-                  </td>
-                  <td className="py-2 px-2 text-left">{user.email}</td>
-                  <td className="py-2 px-2 text-left">{user.address}</td>
-                  <td className="py-3 px-6 text-left">{user.role}</td>
-                  <td className="py-3 px-6 text-center">
-                    {" "}
-                    <button
-                      className="w-4 mr-2 transform hover:text-blue-500 hover:scale-110"
-                      aria-label="View Details"
-                    >
-                      <FaEye />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            filterData.map((user: UserType) => (
+              <tr
+                key={user.id}
+                className="border-b border-gray-200 hover:bg-gray-100 transition duration-300 ease-in-out"
+              >
+                <td className="py-2 px-2">{user.id}</td>
+                <td className="py-2 px-2">{user.name}</td>
+                <td className="py-2 px-2">{user.email}</td>
+                <td className="py-2 px-2">{user.address}</td>
+                <td className="py-2 px-2">{user.role}</td>
+
+                <td className="py-2 px-2 text-center">
+                  <button
+                    className="w-4 mr-2 transform hover:text-blue-500 hover:scale-110"
+                    aria-label="View Details"
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <FaEye />
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
+
+      {/* detail popup */}
+      {isModalOpen && selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-96 p-5 rounded-lg shadow-lg relative">
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              onClick={() => setIsModalOpen(false)}
+            >
+              ✕
+            </button>
+
+            <h2 className="text-xl font-bold mb-3">User Details</h2>
+
+            <p>
+              <strong>ID:</strong> {selectedUser.id}
+            </p>
+            <p>
+              <strong>Name:</strong> {selectedUser.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {selectedUser.email}
+            </p>
+            <p>
+              <strong>Address:</strong> {selectedUser.address}
+            </p>
+            <p>
+              <strong>Role:</strong> {selectedUser.role}
+            </p>
+
+            {selectedUser.role === "STORE_OWNER" &&
+              (() => {
+                const yourRating = stores?.find(
+                  (data) => data.email === selectedUser.email
+                )?.averageRating;
+
+                return (
+                  <div className="text-black flex ">
+                    <strong>Average rating:</strong>
+                    {yourRating ? (
+                      <Rating value={yourRating} readOnly className="top-y-2" />
+                    ) : (
+                      "Not rated yet"
+                    )}
+                  </div>
+                );
+              })()}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

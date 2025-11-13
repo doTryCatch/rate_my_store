@@ -20,13 +20,6 @@ export const Store = () => {
         <tbody className="text-gray-600 text-sm font-light">
           {stores &&
             stores.map((store, index) => {
-              const rating =
-                store.rating?.length > 0
-                  ? store.rating.reduce(
-                      (sum, rate: any) => sum + rate.value,
-                      0
-                    ) / store.rating.length
-                  : 0;
               return (
                 <tr
                   key={index}
@@ -39,7 +32,7 @@ export const Store = () => {
                   <td className="py-3 px-6 text-left">
                     <Rating
                       name="size-small"
-                      value={rating}
+                      value={store.averageRating}
                       size="small"
                       readOnly
                     />

@@ -27,11 +27,11 @@ export const StoreDashboard = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-500">No ratings yet.</p>
+            <p className="text-gray-500">No ratings yet!</p>
           )}
         </div>
 
-        <div className="right w-[40%]">
+        <div className="right w-[40%] ">
           <StoreCards />
         </div>
       </div>

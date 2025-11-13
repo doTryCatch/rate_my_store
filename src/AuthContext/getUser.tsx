@@ -28,7 +28,8 @@ interface Store {
   name: string;
   email: string;
   address: string;
-  rating: rating[];
+  ratings: rating[];
+  averageRating: number;
 }
 interface AuthContextType {
   user: User | null;
@@ -58,6 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const store = await api.get("/store/getAllStores");
 
           setAllusers(userData.data);
+          console.log(store.data);
           setStore(store.data);
         }
         if (userInfo.role === "STORE_OWNER") {
@@ -72,6 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         if (userInfo.role === "USER") {
           const store = await api.get("/store/getAllStores");
+          console.log(store.data);
 
           setStore(store.data);
         }
