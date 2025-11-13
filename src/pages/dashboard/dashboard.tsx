@@ -1,16 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext/getUser";
 import { ProfileNav } from "../../components/profileNav";
 import { Store } from "../../components/store";
-import { IoAddCircle } from "react-icons/io5";
+import { IoAddCircle } from "react-icons/io5/index";
+import { AddStore } from "../../components/addStore";
+import { Users } from "../../components/users";
+import { AddUser } from "../../components/addUser";
+import { Profile } from "../../components/profile";
+import { StoreCards } from "../../components/StoreCard";
+import { StoreDashboard } from "../../components/storeDashboard";
 
 export const Dashboard = () => {
   const { user } = useAuth();
-  const navComponents = ["Dashboard", "Stores", "Users"];
-  const [activeNav, setActiveNav] = useState("Dashboard");
+  const [navComponents, setNavComponents] = useState([
+    "Profile",
+    "Dashboard",
+    "Stores",
+    "Users",
+  ]);
+  useEffect(() => {
+    if (user?.role === "STORE_OWNER")
+      setNavComponents(["Profile", "Dashboard"]);
+    if (user?.role === "USER") setNavComponents(["Profile", "Stores"]);
+  }, []);
 
+  const [activeNav, setActiveNav] = useState("Dashboard");
+  const [isaddCard, setAddCard] = useState(false);
   return (
-    <div className="dashboard flex">
+    <div className="dashboard flex relative">
       <div className="left-nav w-[20%] h-[100vh] text-[#fff] bg-[#1a1919] ">
         <div className="nav-container ">
           <div className="h-16 center bg-[#141414] flex items-center justify-center">
@@ -25,7 +42,7 @@ export const Dashboard = () => {
                   activeNav === item
                     ? "bg-[#ea2868] text-white font-medium"
                     : " hover:text-white"
-                }`}
+                } `}
               >
                 {item}
               </li>
@@ -33,7 +50,7 @@ export const Dashboard = () => {
           </ul>
         </div>
       </div>
-      <div className="dashboard-body-area w-[80%] p-6">
+      <div className="dashboard-body-area w-[80%]  p-6">
         <ProfileNav />
         <pre className="text-2xl font-bold mt-4">{user?.role},</pre>
         <div className="heading flex justify-between">
@@ -42,13 +59,27 @@ export const Dashboard = () => {
             Welcome to the {activeNav}
           </h1>
           <div className="add mr-10 cursor-pointer hover:scale-110">
-            <IoAddCircle className="h-8 w-8" />
+            <IoAddCircle className="h-8 w-8" onClick={() => setAddCard(true)} />
           </div>
         </div>
-
-        {activeNav === "Dashboard" && <p>Dashboard content goes here.</p>}
-        {activeNav === "Stores" && <Store />}
-        {activeNav === "Users" && <p>Users management panel.</p>}
+        {isaddCard && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-55 flex items-center justify-center z-50"
+            onClick={() => setAddCard(false)}
+          >
+            <div onClick={(e) => e.stopPropagation()}>
+              {activeNav === "Stores" && <AddStore />}
+              {activeNav === "Users" && <AddUser />}
+            </div>
+          </div>
+        )}
+        {activeNav === "Profile" && <Profile />}
+        {activeNav === "Dashboard" && user?.role === "STORE_OWNER" && (
+          <StoreDashboard />
+        )}
+        {activeNav === "Stores" && user?.role === "ADMIN" && <Store />}
+        {activeNav === "Stores" && user?.role === "USER" && <StoreCards />}
+        {activeNav === "Users" && <Users />}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { GrLogout } from "react-icons/gr";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa/index";
 import { api } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
